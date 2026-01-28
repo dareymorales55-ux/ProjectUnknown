@@ -1,0 +1,15 @@
+name: ProjectUnknown
+main: com.deejay.projectunknown.ProjectUnknown
+version: 1.0.0
+api-version: "1.21"
+author: Deejay
+
+commands:
+  givecompass:
+    description: Gives the Detective Compass
+    usage: /givecompass
+    permission: projectunknown.givecompass
+
+permissions:
+  projectunknown.givecompass:
+    default: op
