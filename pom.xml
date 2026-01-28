@@ -7,7 +7,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Project info -->
     <groupId>com.deejay</groupId>
     <artifactId>projectunknown</artifactId>
     <version>1.0.0</version>
@@ -15,12 +14,11 @@
 
     <name>ProjectUnknown</name>
 
-    <!-- Java version -->
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- Repositories -->
     <repositories>
         <repository>
             <id>papermc</id>
@@ -28,9 +26,7 @@
         </repository>
     </repositories>
 
-    <!-- Dependencies -->
     <dependencies>
-        <!-- Paper API -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
@@ -39,20 +35,40 @@
         </dependency>
     </dependencies>
 
-    <!-- Build -->
     <build>
         <plugins>
-            <!-- Compiler -->
+            <!-- Compiler set to Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
+            </plugin>
+
+            <!-- This creates the actual usable JAR file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>
