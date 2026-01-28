@@ -3,14 +3,15 @@ package com.deejay.projectunknown.reveal;
 import com.deejay.projectunknown.ProjectUnknown;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Scoreboard;
-import org.bukkit.ScoreboardManager;
-import org.bukkit.Team;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+// FIXED: Scoreboard classes MUST be imported from the .scoreboard package
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -101,16 +102,16 @@ public class RevealManager implements Listener {
 
         Bukkit.broadcastMessage(ChatColor.RED + victim.getName() + " has been caught.");
 
-        // Permanent ban
-        Bukkit.getBanList(org.bukkit.BanList.Type.PROFILE).addBan(
-                victim.getPlayerProfile(),
+        // FIXED: Using NAME type and victim.getName() to avoid profile mismatch errors
+        Bukkit.getBanList(org.bukkit.BanList.Type.NAME).addBan(
+                victim.getName(),
                 ChatColor.DARK_RED + "Your cover was blown.",
-                null,
+                (java.util.Date) null,
                 null
         );
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            victim.kickPlayer(ChatColor.DARK_RED + "Your cover was blown.");
+            victim.kick(net.kyori.adventure.text.Component.text(ChatColor.DARK_RED + "Your cover was blown."));
         });
 
         revealedPlayers.remove(victim.getUniqueId());
