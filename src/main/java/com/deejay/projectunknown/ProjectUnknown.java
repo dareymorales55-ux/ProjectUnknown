@@ -1,9 +1,11 @@
 package com.deejay.projectunknown;
 
 import com.deejay.projectunknown.commands.GiveCompassCommand;
+import com.deejay.projectunknown.commands.SummonChickenCommand;
 import com.deejay.projectunknown.listeners.JoinListener;
 import com.deejay.projectunknown.listeners.CompassListener;
 import com.deejay.projectunknown.listeners.EggListener;
+import com.deejay.projectunknown.mobs.UnknownChicken;
 import com.deejay.projectunknown.reveal.RevealManager;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,7 +34,9 @@ public class ProjectUnknown extends JavaPlugin {
         // Reveal system (handles ALL reveal logic)
         this.revealManager = new RevealManager(this);
 
+        // =========================
         // Listeners
+        // =========================
         getServer().getPluginManager().registerEvents(
                 new JoinListener(this),
                 this
@@ -48,8 +52,16 @@ public class ProjectUnknown extends JavaPlugin {
                 this
         );
 
+        getServer().getPluginManager().registerEvents(
+                new UnknownChicken(this),
+                this
+        );
+
+        // =========================
         // Commands
+        // =========================
         getCommand("givecompass").setExecutor(new GiveCompassCommand());
+        getCommand("summonchicken").setExecutor(new SummonChickenCommand());
 
         getLogger().info("ProjectUnknown enabled");
     }
