@@ -20,7 +20,6 @@ public class CompassListener implements Listener {
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final Map<UUID, TrackingData> tracking = new HashMap<>();
 
-    // HARD-CODED VALUES (replacing config)
     private static final int COOLDOWN_SECONDS = 60;
     private static final int TRACK_DURATION_SECONDS = 30;
 
@@ -71,6 +70,9 @@ public class CompassListener implements Listener {
         }
 
         Player target = possibleTargets.get(new Random().nextInt(possibleTargets.size()));
+
+        // 🔊 ADDED: hunt start sound
+        player.playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1f, 1f);
 
         player.sendMessage(ChatColor.RED + "Hunting " + target.getName());
         target.sendMessage(ChatColor.DARK_RED + "You are being hunted.");
@@ -128,6 +130,8 @@ public class CompassListener implements Listener {
             @Override
             public void run() {
                 if (!hunter.isOnline() || !tracking.containsKey(hunter.getUniqueId())) {
+                    // 🔊 ADDED: hunt end sound
+                    hunter.playSound(hunter.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1f, 1f);
                     cancel();
                     return;
                 }
@@ -138,6 +142,10 @@ public class CompassListener implements Listener {
                 if (target == null || !target.isOnline()) {
                     sendActionBar(hunter, ChatColor.GRAY + "Target offline");
                     tracking.remove(hunter.getUniqueId());
+
+                    // 🔊 ADDED
+                    hunter.playSound(hunter.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1f, 1f);
+
                     cancel();
                     return;
                 }
@@ -145,6 +153,10 @@ public class CompassListener implements Listener {
                 if (!hunter.getWorld().equals(target.getWorld())) {
                     sendActionBar(hunter, ChatColor.GRAY + "Target in another dimension");
                     tracking.remove(hunter.getUniqueId());
+
+                    // 🔊 ADDED
+                    hunter.playSound(hunter.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1f, 1f);
+
                     cancel();
                     return;
                 }
@@ -167,6 +179,10 @@ public class CompassListener implements Listener {
                         tracking.remove(hunter.getUniqueId());
                         hunter.sendMessage(ChatColor.GRAY + "Hunt ended.");
                         target.sendMessage(ChatColor.GRAY + "Hunt ended.");
+
+                        // 🔊 ADDED
+                        hunter.playSound(hunter.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1f, 1f);
+
                         cancel();
                     }
                 }
