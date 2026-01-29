@@ -3,11 +3,13 @@ package com.deejay.projectunknown.listeners;
 import com.deejay.projectunknown.ProjectUnknown;
 import com.deejay.projectunknown.reveal.RevealManager;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -34,6 +36,7 @@ public class EggListener implements Listener {
     public EggListener(ProjectUnknown plugin) {
         this.plugin = plugin;
         this.revealManager = plugin.getRevealManager();
+        startPassiveEggTask();
     }
 
     /* ======================================================
@@ -70,6 +73,57 @@ public class EggListener implements Listener {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         egg.setItemMeta(meta);
+    }
+
+    /* ======================================================
+       PASSIVE EFFECTS (INVENTORY CHECK)
+       ====================================================== */
+
+    private void startPassiveEggTask() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+
+                    if (!player.getInventory().contains(Material.DRAGON_EGG)) continue;
+
+                    // Purple ender particles
+                    player.getWorld().spawnParticle(
+                            Particle.PORTAL,
+                            player.getLocation().add(0, 1, 0),
+                            8,
+                            0.4, 0.6, 0.4,
+                            0
+                    );
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 20L);
+    }
+
+    /* ======================================================
+       PERMANENT HEART GAIN ON KILL
+       ====================================================== */
+
+    @EventHandler
+    public void onPlayerKill(PlayerDeathEvent event) {
+        Player dead = event.getEntity();
+        Player killer = dead.getKiller();
+
+        if (killer == null) return;
+        if (!killer.getInventory().contains(Material.DRAGON_EGG)) return;
+
+        var attr = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (attr == null) return;
+
+        double current = attr.getBaseValue();
+        double max = 40.0; // 20 hearts
+
+        if (current >= max) return;
+
+        attr.setBaseValue(Math.min(current + 2.0, max));
+
+        killer.sendMessage(ChatColor.DARK_PURPLE + "The Dragon Egg empowers you.");
+        killer.playSound(killer.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1f, 1.4f);
     }
 
     /* ======================================================
