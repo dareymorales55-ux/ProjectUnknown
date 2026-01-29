@@ -10,6 +10,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.Block;
+import org.bukkit.block.TileState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
@@ -48,10 +48,6 @@ public class BellListener implements Listener {
         this.bellBlockKey = new NamespacedKey(plugin, "bell_of_truth_block");
     }
 
-    /* =========================
-       PLACE
-       ========================= */
-
     @EventHandler
     public void onBellPlace(BlockPlaceEvent event) {
         ItemStack item = event.getItemInHand();
@@ -61,29 +57,29 @@ public class BellListener implements Listener {
         if (!meta.getPersistentDataContainer().has(bellItemKey, PersistentDataType.BYTE)) return;
 
         Block block = event.getBlockPlaced();
-        block.getPersistentDataContainer().set(bellBlockKey, PersistentDataType.BYTE, (byte) 1);
+        // FIX: Cast to TileState to access PersistentDataContainer on a Block
+        if (block.getState() instanceof TileState tileState) {
+            tileState.getPersistentDataContainer().set(bellBlockKey, PersistentDataType.BYTE, (byte) 1);
+            tileState.update(); // Important: must call update() to save changes
+        }
     }
-
-    /* =========================
-       BREAK
-       ========================= */
 
     @EventHandler
     public void onBellBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (block.getType() != Material.BELL) return;
 
-        PersistentDataContainer data = block.getPersistentDataContainer();
-        if (!data.has(bellBlockKey, PersistentDataType.BYTE)) return;
+        // FIX: Cast to TileState to check data
+        if (block.getState() instanceof TileState tileState) {
+            if (!tileState.getPersistentDataContainer().has(bellBlockKey, PersistentDataType.BYTE)) return;
 
-        event.setDropItems(false);
-        block.getWorld().dropItemNaturally(block.getLocation(), createBellOfTruth());
-        data.remove(bellBlockKey);
+            event.setDropItems(false);
+            block.getWorld().dropItemNaturally(block.getLocation(), createBellOfTruth());
+            // No need to manually remove data if block is breaking, but good practice:
+            tileState.getPersistentDataContainer().remove(bellBlockKey);
+            tileState.update();
+        }
     }
-
-    /* =========================
-       RING
-       ========================= */
 
     @EventHandler
     public void onBellRing(PlayerInteractEvent event) {
@@ -123,10 +119,6 @@ public class BellListener implements Listener {
         }
     }
 
-    /* =========================
-       PARTICLES
-       ========================= */
-
     private void spawnRedstoneRing(Location center) {
         DustOptions dust = new DustOptions(Color.RED, 1.5f);
         int points = 120;
@@ -136,18 +128,15 @@ public class BellListener implements Listener {
             double x = center.getX() + RADIUS * Math.cos(angle);
             double z = center.getZ() + RADIUS * Math.sin(angle);
 
+            // FIX: Changed Particle.REDSTONE to Particle.DUST for 1.21.4
             center.getWorld().spawnParticle(
-                    Particle.REDSTONE,
+                    Particle.DUST,
                     new Location(center.getWorld(), x, center.getY(), z),
                     1,
                     dust
             );
         }
     }
-
-    /* =========================
-       ITEM
-       ========================= */
 
     private ItemStack createBellOfTruth() {
         ItemStack bell = new ItemStack(Material.BELL);
