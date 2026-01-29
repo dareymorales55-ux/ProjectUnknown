@@ -3,6 +3,7 @@ package com.deejay.projectunknown;
 import com.deejay.projectunknown.commands.GiveCompassCommand;
 import com.deejay.projectunknown.listeners.JoinListener;
 import com.deejay.projectunknown.listeners.CompassListener;
+import com.deejay.projectunknown.listeners.EggListener;
 import com.deejay.projectunknown.reveal.RevealManager;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,7 +29,7 @@ public class ProjectUnknown extends JavaPlugin {
         // Create players.yml FIRST
         createPlayerConfig();
 
-        // Reveal system
+        // Reveal system (handles ALL reveal logic)
         this.revealManager = new RevealManager(this);
 
         // Listeners
@@ -39,6 +40,11 @@ public class ProjectUnknown extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new CompassListener(this),
+                this
+        );
+
+        getServer().getPluginManager().registerEvents(
+                new EggListener(this),
                 this
         );
 
