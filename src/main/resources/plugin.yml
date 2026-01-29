@@ -1,1 +1,17 @@
+name: ProjectUnknown
+main: com.deejay.projectunknown.ProjectUnknown
+version: 1.0.0
+api-version: "1.21"
+author: Deejay
 
+commands:
+  givecompass:
+    description: Gives the Detective Compass
+    usage: /givecompass
+    permission: projectunknown.givecompass
+  summonchicken:
+    description: Summons the Unknown Chicken
+
+permissions:
+  projectunknown.givecompass:
+    default: op
