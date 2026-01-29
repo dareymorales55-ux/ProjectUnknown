@@ -29,9 +29,6 @@ public class HourlyRevealManager {
         this.revealManager = plugin.getRevealManager();
     }
 
-    /**
-     * Called once when the FIRST player joins the server
-     */
     public void startIfNeeded() {
         if (started) return;
         started = true;
@@ -40,7 +37,6 @@ public class HourlyRevealManager {
     }
 
     private void scheduleNextCycle() {
-        // Wait initial 10 minutes
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -52,7 +48,6 @@ public class HourlyRevealManager {
     private void sendWarning() {
         Bukkit.broadcastMessage("§c§lPlayer(s) will be revealed promptly");
 
-        // Wait 5 seconds, then reveal
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -62,9 +57,9 @@ public class HourlyRevealManager {
     }
 
     private void startReveal() {
-        // Play reveal-start sound
+        // FIXED: Changed Sound.RESPAWN_ANCHOR_CHARGE to Sound.BLOCK_RESPAWN_ANCHOR_CHARGE
         Bukkit.getOnlinePlayers().forEach(p ->
-                p.playSound(p.getLocation(), Sound.RESPAWN_ANCHOR_CHARGE, 1f, 1f)
+                p.playSound(p.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1f, 1f)
         );
 
         List<Player> candidates = new ArrayList<>();
@@ -92,7 +87,6 @@ public class HourlyRevealManager {
             revealManager.reveal(player, REVEAL_DURATION);
         }
 
-        // Schedule end sound + next cycle
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -102,9 +96,9 @@ public class HourlyRevealManager {
     }
 
     private void endReveal() {
-        // Play reveal-end sound
+        // FIXED: Changed Sound.POTION_BREWING to Sound.BLOCK_BREWING_STAND_BREW
         Bukkit.getOnlinePlayers().forEach(p ->
-                p.playSound(p.getLocation(), Sound.POTION_BREWING, 1f, 1f)
+                p.playSound(p.getLocation(), Sound.BLOCK_BREWING_STAND_BREW, 1f, 1f)
         );
 
         scheduleCooldown();
