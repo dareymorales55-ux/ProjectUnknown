@@ -1,5 +1,6 @@
 package com.deejay.projectunknown;
 
+import com.deejay.projectunknown.commands.GiveCompassCommand;
 import com.deejay.projectunknown.listeners.JoinListener;
 import com.deejay.projectunknown.listeners.CompassListener;
 import com.deejay.projectunknown.reveal.RevealManager;
@@ -15,8 +16,8 @@ public class ProjectUnknown extends JavaPlugin {
 
     private static ProjectUnknown instance;
     private RevealManager revealManager;
-    
-    // Config file fields
+
+    // players.yml
     private File playerConfigFile;
     private FileConfiguration playerConfig;
 
@@ -24,11 +25,13 @@ public class ProjectUnknown extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // Initialize custom config first so listeners can use it
+        // Create players.yml FIRST
         createPlayerConfig();
 
+        // Reveal system
         this.revealManager = new RevealManager(this);
 
+        // Listeners
         getServer().getPluginManager().registerEvents(
                 new JoinListener(this),
                 this
@@ -39,32 +42,37 @@ public class ProjectUnknown extends JavaPlugin {
                 this
         );
 
+        // Commands
+        getCommand("givecompass").setExecutor(new GiveCompassCommand());
+
         getLogger().info("ProjectUnknown enabled");
     }
 
     @Override
     public void onDisable() {
-        savePlayerConfig(); // Auto-save on shutdown
+        savePlayerConfig();
         getLogger().info("ProjectUnknown disabled");
     }
 
-    // This method fixes the error in JoinListener.java:[31,15]
+    /* =========================
+       players.yml access
+       ========================= */
+
     public FileConfiguration getPlayerConfig() {
         return this.playerConfig;
     }
 
-    // This method fixes the error in JoinListener.java:[32,15]
     public void savePlayerConfig() {
         try {
-            getPlayerConfig().save(playerConfigFile);
+            playerConfig.save(playerConfigFile);
         } catch (IOException e) {
             getLogger().severe("Could not save players.yml!");
         }
     }
 
-    // Sets up the physical players.yml file in the plugin folder
     private void createPlayerConfig() {
         playerConfigFile = new File(getDataFolder(), "players.yml");
+
         if (!playerConfigFile.exists()) {
             playerConfigFile.getParentFile().mkdirs();
             saveResource("players.yml", false);
@@ -72,6 +80,10 @@ public class ProjectUnknown extends JavaPlugin {
 
         playerConfig = YamlConfiguration.loadConfiguration(playerConfigFile);
     }
+
+    /* =========================
+       Getters
+       ========================= */
 
     public static ProjectUnknown getInstance() {
         return instance;
