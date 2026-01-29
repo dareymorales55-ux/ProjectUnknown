@@ -9,6 +9,8 @@ commands:
     description: Gives the Detective Compass
     usage: /givecompass
     permission: projectunknown.givecompass
+  summonchicken:
+    description: Summons the Unknown Chicken
 
 permissions:
   projectunknown.givecompass:
