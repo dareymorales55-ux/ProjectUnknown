@@ -24,7 +24,7 @@ public class UnknownChicken implements Listener {
         chicken.setCustomNameVisible(true);
         
         // Fixed Attribute name for 1.16+ and casted safely
-        chicken.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(200);
+        chicken.getAttribute(Attribute.MAX_HEALTH).setBaseValue(200);
         chicken.setHealth(200);
         chicken.setGravity(false);
         chicken.setSilent(true);
