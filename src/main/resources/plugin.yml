@@ -9,9 +9,18 @@ commands:
     description: Gives the Detective Compass
     usage: /givecompass
     permission: projectunknown.givecompass
+
+  givebell:
+    description: Gives the Bell Of Truth
+    usage: /givebell
+    permission: projectunknown.givebell
+
   summonchicken:
     description: Summons the Unknown Chicken
 
 permissions:
   projectunknown.givecompass:
+    default: op
+
+  projectunknown.givebell:
     default: op
