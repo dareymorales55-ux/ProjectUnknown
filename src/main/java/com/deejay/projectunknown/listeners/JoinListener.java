@@ -27,7 +27,7 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        // Store real name (same logic as before)
+        // Store real name
         plugin.getPlayerConfig().set("players." + uuid + ".name", player.getName());
         plugin.savePlayerConfig();
 
@@ -37,8 +37,12 @@ public class JoinListener implements Listener {
         profile.setProperties(List.of(
             new ProfileProperty(
                 "textures",
-                "ewogICJ0aW1lc3RhbXAiIDogMTY5MTIxODk2MDIxMiwKICAicHJvZmlsZUlkIiA6ICJiNGJmZDZhNmRiZGQ0MDg2ODRhYmIzYzlmNDQyNmRiYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJWZXJzYWNlNjciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYxZWZhN2YxODE3MTE3ZDZlMjQyOGY1YjM4OGEzNWI5MzcwMWEwN2ViOGUzNWEzZmFkY2ZhZmVjMmRjNzdlIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
-                "lBwv7s/JkrSLa5sHzjx6JUBz7ALWa2qgW/2ugvktSxY8fD4gPYuMgvrkhJ3I9YB+87H2PMPwsW8hjysz42cSvTl8G0MbnH4PpEZIiiw7be25wSaVSeTuN2E1WQeKGwkJ/O1CXniED628ElBY1WyGkC7Dtea5pKHVkud3p+3LG6ZiTOGAS1QkMV9Iu7EZ9ZvRnhf7F8bd5EolTEWDtlAuxNuS1E53xtlIRPaHnMZszA31HhoeeRRPudS1w6uLMwcaO8hGnxYxQKVauZ/yv8km/Bi48cUGD2j7TLQTw66UzniiDkLYfiDHNx3HtPCVB7ICrPqFVa82zcA4RnJiqyeKEuyoRiwcXv9HDSTdPG8PrTLcPdDNvOqN0SmXHgGZhUIMDKv3QXEHOh6SpSBF5u54bkHr/MEXxhO6WachRDv+/hA8OklOI99V2fElMl+3A5v5v+TqgVsbJTL7fQG2nWsGAqhf7JddnxEnMxkCh1At9CiEnEwzUq4/XHGO+l6iVxZMIHyTzZlQbZfc1kOS1xIBSqR+TU4dNPdQ39hKqbQGh+eDjL86Ql7Chf3YLX957DPAft6Pccj9oGMsSsJ86/y7xMcqar2QVocsAgK2hipyuQ34mMd2JHYvkp/3siUy3pXDscN4c06l3FtmNQ/WgvRqRyulBoc9Ym3R9+ZZzQglUnE="
+
+                // ✅ TEXTURE VALUE (Base64 JSON)
+                "ewogICJ0aW1lc3RhbXAiIDogMTc2OTczNjQ1NjAyMSwKICAicHJvZmlsZUlkIiA6ICJiZTQxM2Y4M2Y4ZWE0MjE0OGMwMjk0YTJiYzIyN2U2NSIsCiAgInByb2ZpbGVOYW1lIiA6ICJGaWdodGJveTEwMyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jZjY4ZmFjODE0OTJmZDRiNzMxMWUzZDcxMDExMWU2MjljMTUwYTJjYTA3NzkwN2NjOTZmMTYxNzlmNWZkMTYyIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
+
+                // ✅ MATCHING SIGNATURE
+                "VJ7aIBR3MpxmTMbQc5CfZNp52nijjk5OogyRCl9nv4HAPFcObshYMpbM37bKlQkn0bVmzVdVhDPvAUhUCECZvt91Zetvc5iJtz1Yr884VSYhGUrJWUgf2bESHPre5bo+O7HK2q6P6u4nIOd4RZa7zHbIDvYLq7YuwzIakVd5mUw8mvS/AkN2PXi9mqCNYYkogwgP4bXbjmOTAP94wZcXjR4nvX9PDGtzGvMM3ElQ14ZRrJiiPkR+eBR7MpSMZ0EoKEv7nhALmsFCVZE1B0vlGCF7n2dYNnyCpBNnj1QBROEV3HxbSaA5ifAo63lq/tt7hMcJ47p8Y6fikWAARWaNRE7W1+F068WSAn5kd8RSIBEMC3QRIAXohca+tAGHWX8UC5Z6NgyXuLEcz/EaTrCqYsO9bASOZrc80erAxsE9KdDWAs7Uxjt4IE6PoAKXysmM0q8YOjOt0eUXShFI/r7hPuSuNOV/aWl2hNWLmFV+KbMQK3NhVYP7hg7dVf4F4tTEhcdfPaP9pt4ZTQa94vdyNaHEUriUorICC1E9d0/envfUCsdP2vj22eWUmLC/x+EpAUubP8dt4gsKNegK9wcIF6PihlNteV2z3kM0W61AWrO5ap0HC9wPcIdZa+zz9+bj4FFtReGCsnqeGT5eMEsU5OID/oLSAUcOzfP5YpnTz3E=8.155"
             )
         ));
 
